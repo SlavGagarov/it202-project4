@@ -54,7 +54,9 @@
     <h3>Selected Countries</h3>
     <ul id="selected"></ul>
     
+    
     <script>
+        
         mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('header.mdc-top-app-bar'));
         mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
         
@@ -63,8 +65,8 @@
           console.log(selectedC);
           if(selectedC != ""){
               let ulRef = document.querySelector("ul");
-              var newLi = document.createElement("li");
-              var newSpan = document.createElement("span");
+              let newLi = document.createElement("li");
+              let newSpan = document.createElement("span");
 
               newLi.appendChild(newSpan);
               newSpan.textContent=selectedC;
@@ -78,15 +80,16 @@
           fetch("https://pomber.github.io/covid19/timeseries.json")
           .then(response => response.json())
           .then(data => {
-              var keys = Object.keys(data);
+              let keys = Object.keys(data);
               keys.forEach(val => {
-                  var newOption = document.createElement("option");
+                  let newOption = document.createElement("option");
                   newOption.value = val;
                   datalistRef.appendChild(newOption);
             });
               
           });
     </script>
+    <script></script>
 </body>
 
 </html>
