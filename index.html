@@ -61,25 +61,31 @@
     </div>
     
     
-<div class="screen2">    
-    <h1>Confirmed Cases</h1>
-    <div class="mdc-data-table">
-      <table class="mdc-data-table__table" aria-label="Dessert calories">
-        <thead>
-          <tr class="mdc-data-table__header-row">
+    <div class="screen2">    
+        <h1>Confirmed Cases</h1>
+        <div class="mdc-data-table">
+          <table class="mdc-data-table__table" aria-label="Dessert calories">
+            <thead>
+              <tr class="mdc-data-table__header-row">
 
-          </tr>
-        </thead>
-        <tbody class="mdc-data-table__content">
+              </tr>
+            </thead>
+            <tbody class="mdc-data-table__content">
 
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
     </div>
-</div>
+    
+    <div class="screen3">
+        <div id="curve_chart" style="width: 900px; height: 500px"></div>
+    </div>
+         
     
     <script>
         document.querySelector(".screen1").style.display="block";
         document.querySelector(".screen2").style.display = "none";
+        document.querySelector(".screen3").style.display = "none";
         
         let cData;
         let selectedCountriesArray = [];
@@ -126,6 +132,7 @@
         document.querySelector("#homeButton").addEventListener("click", function(){
             document.querySelector(".screen1").style.display="block";
             document.querySelector(".screen2").style.display = "none";
+            document.querySelector(".screen3").style.display = "none";
         });
         
         document.querySelector("#tableButton").addEventListener("click", function(){
@@ -144,7 +151,8 @@
             
             document.querySelector(".screen1").style.display="none";
             document.querySelector(".screen2").style.display = "block";
-                        
+            document.querySelector(".screen3").style.display = "none";
+            
              let dataRowRef = document.querySelector(".mdc-data-table__header-row"); 
             
             
@@ -190,6 +198,50 @@
                     tBodyRef.appendChild(newDataEntry);
                 }
         });
+    </script>
+    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      document.querySelector("#chartButton").addEventListener("click", function(){
+                  document.querySelector(".screen1").style.display="none";
+            document.querySelector(".screen2").style.display = "none";
+            document.querySelector(".screen3").style.display = "block";
+          
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+      let dataArray=[];
+      
+      let row1=[];
+      row1.push('Date'); 
+      selectedCountriesArray.forEach(val =>{
+          row1.push(val);
+      });
+      dataArray.push(row1);
+
+          
+      for(let i = 0; i< cData[selectedCountriesArray[0]].length; i++){
+          let tmpRowArr=[];
+          tmpRowArr.push(cData[selectedCountriesArray[0]][i]["date"]);
+          selectedCountriesArray.forEach(val => { 
+              tmpRowArr.push(cData[val][i]["confirmed"]);
+          });
+          dataArray.push(tmpRowArr);
+      }
+         
+      var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+          title: 'Confirmed Cases',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+      });
     </script>
     
 </body>
