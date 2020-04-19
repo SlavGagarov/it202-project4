@@ -57,6 +57,11 @@
     
     <h3>Selected Countries</h3>
     <ul id="selected"></ul>
+            
+            <button id="tableButton2" class="mdc-button">
+          <div class="mdc-button__ripple"></div>
+          <span class="mdc-button__label">Create Table</span>
+        </button>
     </div>
     </div>
     
@@ -83,7 +88,10 @@
          
     
     <script>
-        //Slav Gagarov
+        const unique = (value, index, self) => {
+          return self.indexOf(value) === index
+        }
+        
         document.querySelector(".screen1").style.display="block";
         document.querySelector(".screen2").style.display = "none";
         document.querySelector(".screen3").style.display = "none";
@@ -92,7 +100,12 @@
         let selectedCountriesArray = [];
         
         mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('header.mdc-top-app-bar'));
-        mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
+        [].slice.call(document.querySelectorAll('.mdc-button')).forEach(
+        function(ele) {
+          mdc.ripple.MDCRipple.attachTo(ele);
+        });
+        
+        //mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
         mdc.dataTable.MDCDataTable.attachTo(document.querySelector('.mdc-data-table'));
         
         
@@ -137,6 +150,72 @@
         });
         
         document.querySelector("#tableButton").addEventListener("click", function(){
+        selectedCountriesArray = selectedCountriesArray.filter(unique);
+        let clearTHead = document.querySelector(".mdc-data-table__header-row");        
+        let c = clearTHead.firstChild;  
+        while (c) { 
+            clearTHead.removeChild(c); 
+            c = clearTHead.firstChild; 
+        }
+        let clearTBody = document.querySelector(".mdc-data-table__content");
+        c = clearTBody.firstChild;  
+        while (c) { 
+            clearTBody.removeChild(c); 
+            c = clearTBody.firstChild; 
+        }            
+            
+            document.querySelector(".screen1").style.display="none";
+            document.querySelector(".screen2").style.display = "block";
+            document.querySelector(".screen3").style.display = "none";
+            
+             let dataRowRef = document.querySelector(".mdc-data-table__header-row"); 
+            
+            
+            let dateTop = document.createElement("th");
+                dateTop.classList.add("mdc-data-table__header-cell", "mdc-data-table__header-cell--numeric");
+                dateTop.setAttribute("role","columnheader");
+                dateTop.setAttribute("scope","col");
+                dateTop.textContent="Date";
+                
+                dataRowRef.appendChild(dateTop);
+            
+            selectedCountriesArray.forEach(val =>{
+               
+                
+                let newCountry = document.createElement("th");
+                newCountry.classList.add("mdc-data-table__header-cell", "mdc-data-table__header-cell--numeric");
+                newCountry.setAttribute("role","columnheader");
+                newCountry.setAttribute("scope","col");
+                newCountry.textContent=val;
+                
+                dataRowRef.appendChild(newCountry);   
+            });
+            
+            let tBodyRef = document.querySelector(".mdc-data-table__content");
+              let newDataEntry = document.createElement("tr");
+            for(let i = 0; i< cData[selectedCountriesArray[0]].length; i++)
+                {
+                  let tBodyRef = document.querySelector(".mdc-data-table__content");
+                  let newDataEntry = document.createElement("tr");
+                    
+                  let dateCell = document.createElement("td");
+                  dateCell.classList.add("mdc-data-table__cell", "mdc-data-table__cell--numeric");
+                  dateCell.textContent=cData[selectedCountriesArray[0]][i]["date"];
+                  newDataEntry.appendChild(dateCell); 
+                    
+
+                selectedCountriesArray.forEach(val => { 
+                  let newCell = document.createElement("td");
+                  newCell.classList.add("mdc-data-table__cell", "mdc-data-table__cell--numeric");
+                  newCell.textContent=cData[val][i]["confirmed"];
+                  newDataEntry.appendChild(newCell); 
+                });
+                    tBodyRef.appendChild(newDataEntry);
+                }
+        });
+        
+        document.querySelector("#tableButton2").addEventListener("click", function(){
+        selectedCountriesArray = selectedCountriesArray.filter(unique);
         let clearTHead = document.querySelector(".mdc-data-table__header-row");        
         let c = clearTHead.firstChild;  
         while (c) { 
@@ -204,9 +283,10 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       document.querySelector("#chartButton").addEventListener("click", function(){
-                  document.querySelector(".screen1").style.display="none";
-            document.querySelector(".screen2").style.display = "none";
-            document.querySelector(".screen3").style.display = "block";
+      selectedCountriesArray = selectedCountriesArray.filter(unique);
+      document.querySelector(".screen1").style.display="none";
+      document.querySelector(".screen2").style.display = "none";
+      document.querySelector(".screen3").style.display = "block";
           
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
